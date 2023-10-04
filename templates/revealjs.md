@@ -65,6 +65,13 @@ $endfor$
 $if(date)$
   <p class="date">$date$</p>
 $endif$
+$if(content_url)$
+<div class="titlelinks">
+<a title="Template Repo" href="$content_url$"><i class="fa-solid fa-folder-tree"></i></a>
+<a title="Template Zip"  href="$content_url$/zipball/master/"><i class="fa-solid fa-file-zipper"></i></a>
+<a title="Questions"     href="$content_url$/raw/main/SectionQuestions.pdf"><i class="fa-solid fa-file-pdf"></i></a>
+</div>
+$endif$
 </section>
 $endif$
 $if(toc)$
@@ -94,10 +101,18 @@ $if(mathjax)$
 $endif$
 $if(highlightjs)$
   <script src="$revealjs-url$/plugin/highlight/highlight.js"></script>
+  <script src="$revealjs-url$/../python_language.js"></script>
 $endif$
+
+  // Font Awesome Characters
+  <script src="https://kit.fontawesome.com/4bc05635b0.js" crossorigin="anonymous"></script>
 
   // Code Tracing
   <script src="$revealjs-url$/../codetrace.js"></script>
+
+$for(tracejs)$
+  <script src="$tracejs$Trace.js"></script>
+$endfor$
 
   <script>
 
@@ -363,6 +378,13 @@ $if(mathjax)$
 		  CommonHTML: {scale: 80},
 		},
 $endif$
+$if(highlightjs)$
+          highlight: {
+            beforeHighlight: hljs => hljs.registerLanguage("mypython", function(hljs) {
+              console.log(mypythondef);
+              return mypythondef(hljs); } )
+          },
+$endif$
         // reveal.js plugins
         plugins: [
 $if(mathjax)$
@@ -404,7 +426,22 @@ $endif$
             // { src: "$revealjs-url$/plugin/title-footer/title-footer.js", async: true, callback: function() { title_footer.initialize({css:"$revealjs-url$/plugin/title-footer/title-footer.css"}); } },
 		],
       });
+$for(tracejs)$
+  Reveal.addEventListener("$tracejs$Trace", $tracejs$Demo);
+$endfor$
     </script>
+  <script>
+  // This is admitedly a very hacky way to achieve my pseudo code highlighting, but it works?
+    function remove_bars() {
+      var pseudoBlocks = document.getElementsByClassName("hljs-pseudo");
+      console.log(pseudoBlocks);
+      for ( var i = 0; i < pseudoBlocks.length; i++) {
+        pseudoBlocks[i].innerHTML = pseudoBlocks[i].innerHTML.replaceAll("\|\|\|", "");
+      }
+      }
+    // omg this is even more hacky now, but I need this to run after hljs has done its thing
+    setTimeout(remove_bars, 100);
+  </script>
   $for(include-after)$
   $include-after$
   $endfor$

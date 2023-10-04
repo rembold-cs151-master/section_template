@@ -673,3 +673,13 @@ margin-left: 1em;*/ }
 #notescanvas>.boardhandle {
   display: none;
 }
+
+.titlelinks {
+    display: flex;
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    gap: 20px;
+    flex-direction: row;
+}
+
